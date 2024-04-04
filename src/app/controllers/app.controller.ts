@@ -11,21 +11,6 @@ export class AppController {
 
   private initializeRouter() {
 
-    // Serve the home page
-    this.router.get("/", (req: Request, res: Response) => {
-      try {
-        // Render the "home" template as HTML
-        res.render("home", {
-          user: req.session.user;
-        });
-      } catch (err) {
-        this.log.error(err);
-      }
-
-
-    });
-
-    
     this.router.get("/login", (req: Request, res: Response) => {
       res.render("login");
     });
@@ -41,11 +26,25 @@ export class AppController {
       });
     });
 
+    // PROTECT THE HOMEPAGE
+
     this.router.use((req: any, res: Response, next) => {
-      if (req.session.user) { 
+      if (req.session.user) {
         next();
       } else {
         res.redirect("/login");
+      }
+    });
+
+    // Serve the home page
+    this.router.get("/", (req: any, res: Response) => {
+      try {
+        // Render the "home" template as HTML
+        res.render("home", {
+          user: req.session.user
+        });
+      } catch (err) {
+        this.log.error(err);
       }
     });
     
